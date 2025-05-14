@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="top-buttons">
+            <a href="home.html" class="btn">Home</a>
+            <a href="login.html" class="btn">Login</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Sign Up</h2>
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+            </div>
+            <button type="submit" class="btn">Sign Up</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    
+    try {
+        const response = await fetch('http://localhost:5000/api/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, password, confirmPassword }),
+        });
+        
+        const data = await response.json();
+        const messageElement = document.getElementById('message');
+        
+        if (!response.ok) {
+            // Show more detailed error message
+            messageElement.textContent = `Error: ${data.message || 'Unknown error'}`;
+            messageElement.style.color = 'red';
+            return;
+        }
+        
+        // Success case
+        messageElement.textContent = 'Signup successful! Redirecting...';
+        messageElement.style.color = 'green';
+        
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
+    } catch (error) {
+        document.getElementById('message').textContent = `Network error: ${error.message}`;
+        document.getElementById('message').style.color = 'red';
+    }
+});
+    </script>
+</body>
+</html>

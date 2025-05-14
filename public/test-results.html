@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Results</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+            const score = parseInt(urlParams.get('score'));
+            
+            document.getElementById('score-display').textContent = score;
+            
+            if (score >= 11) {
+                document.getElementById('result-message').textContent = "Congratulations! You are eligible for admission.";
+                document.getElementById('next-step').innerHTML = `
+                    <a href="admission form.html" class="hero-btn red-btn">Proceed to Admission Form</a>
+                `;
+            } else {
+                document.getElementById('result-message').textContent = "Sorry, you are not eligible for admission this time.";
+            }
+            
+            // In real implementation, send email with results
+            console.log(`Email sent to ${email} with score ${score}`);
+        });
+    </script>
+</head>
+<body>
+    <section class="sub-header">
+        <nav>
+            <a href="web1.html"><img src="pics/11.png"></a>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="web1.html">HOME</a></li>
+                    <li><a href="about.html">ABOUT</a></li>
+                </ul>
+            </div>
+        </nav>
+        <h1>Test Results</h1>
+    </section>
+
+    <section class="about-us">
+        <div class="row">
+            <div class="about-col">
+                <h2>Your Test Results</h2>
+                <p>Your score: <span id="score-display">0</span>/30</p>
+                <p id="result-message"></p>
+                <div id="next-step"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="footer">
+        <h4><center>About Us</center></h4>
+        <p><center>Life is nothing without education</center></p>
+    </section>
+</body>
+</html>

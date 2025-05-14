@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admission Test</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        let questions = [];
+        let timer;
+        let timeLeft = 30 * 60;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            startTimer();
+            fetchQuestions();
+        });
+
+        function startTimer() {
+            timer = setInterval(function() {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert('Time is up! Test will be submitted automatically.');
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent =
+                `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        function fetchQuestions() {
+            fetch('http://localhost:5000/api/questions')
+                .then(response => response.json())
+                .then(data => {
+                    questions = data;
+                    displayQuestions();
+                })
+                .catch(error => {
+                    console.error('Error fetching questions:', error);
+                    questions = [
+                        {
+                            id: 1,
+                            question: "What is 2 + 2?",
+                            options: ["3", "4", "5", "6"],
+                            answer: "4",
+                            category: "math"
+                        }
+                    ];
+                    displayQuestions();
+                });
+        }
+
+        function displayQuestions() {
+            const testContainer = document.getElementById('test-container');
+            testContainer.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                testContainer.innerHTML += `
+                    <div class="question">
+                        <h3>${index + 1}. ${q.question}</h3>
+                        ${q.options.map(opt => `
+                            <label>
+                                <input type="radio" name="q${q.id}" value="${opt}" required>
+                                ${opt}
+                            </label><br>
+                        `).join('')}
+                    </div>
+                `;
+            });
+        }
+
+        function submitTest() {
+            clearInterval(timer);
+
+            const email = new URLSearchParams(window.location.search).get('email');
+            const answers = [];
+
+            questions.forEach(q => {
+                const selectedOption = document.querySelector(`input[name="q${q.id}"]:checked`);
+                if (selectedOption) {
+                    answers.push({
+                        questionId: q.id,
+                        selectedOption: selectedOption.value
+                    });
+                }
+            });
+
+            fetch('http://localhost:5000/api/submit-test', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, answers })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = `test-results.html?email=${email}&score=${data.score}`;
+                } else {
+                    alert('Error submitting test. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting test:', error);
+                alert('Error submitting test. Please try again.');
+            });
+        }
+    </script>
+</head>
+<body>
+    <section class="sub-header">
+        <nav>
+            <a href="web1.html"><img src="pics/11.png"></a>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="web1.html">HOME</a></li>
+                    <li><a href="about.html">ABOUT</a></li>
+                </ul>
+            </div>
+        </nav>
+        <h1>Admission Test</h1>
+    </section>
+
+    <section class="about-us">
+        <div class="row">
+            <div class="about-col">
+                <h2>Admission Test (30 MCQs)</h2>
+                <p id="timer">Time remaining: 30:00</p>
+
+                <form id="testForm" onsubmit="event.preventDefault(); submitTest();">
+                    <div id="test-container"></div>
+                    <button type="submit" class="hero-btn red-btn">Submit Test</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="footer">
+        <h4><center>About Us</center></h4>
+        <p><center>Life is nothing without education</center></p>
+    </section>
+</body>
+</html>

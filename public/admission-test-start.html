@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admission Test - Email Verification</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="sub-header">
+        <nav>
+            <a href="web1.html"><img src="pics/11.png"></a>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="web1.html">HOME</a></li>
+                    <li><a href="about.html">ABOUT</a></li>
+                    <li><a href="course.html">COURSE</a></li>
+                    <li><a href="contact.html">CONTACT</a></li>
+                </ul>
+            </div>
+        </nav>
+        <h1>Admission Test</h1>
+    </section>
+
+    <section class="about-us">
+        <div class="row">
+            <div class="about-col">
+                <h2>Enter Your Email to Begin Test</h2>
+                <form id="emailForm" onsubmit="event.preventDefault(); redirectToTest();">
+                    <input type="email" id="email" placeholder="Your Email Address" required>
+                    <button type="submit" class="hero-btn red-btn">Start Test</button>
+                </form>
+                <p>You will receive your test results at this email address.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="footer">
+        <h4><center>About Us</center></h4>
+        <p><center>Life is nothing without education</center></p>
+    </section>
+
+    <script>
+        function redirectToTest() {
+            const email = document.getElementById('email').value;
+            window.location.href = `admission-test.html?email=${encodeURIComponent(email)}`;
+        }
+    </script>
+</body>
+</html>
