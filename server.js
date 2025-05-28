@@ -241,7 +241,7 @@ app.post('/api/submit-test', async (req, res) => {
         });
 
         await transporter.sendMail({
-            from: 'umair225290@gmail.com',
+            from: '',
             to: email,
             subject: 'Admission Test Results',
             text: `Thank you for taking the test. Your score is: ${score}/30`
